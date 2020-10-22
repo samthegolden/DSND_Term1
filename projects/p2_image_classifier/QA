@@ -1,0 +1,46 @@
+Q
+
+I'm not understanding what I am doing wrong. Please check the code in github below.
+
+My code throws this error:
+
+RuntimeError: Expected 4-dimensional input for 4-dimensional weight [64, 3, 3, 3], but got 2-dimensional input of size [32, 150528] instead
+I have the input size of 224 * 224 (images.shape).
+
+When I load the images, I resize them as showed in the examples:
+
+images = images.view(images.shape[0], -1)
+
+###
+
+A:
+
+Hi,
+
+So what you are doing wrong here is assuming that the image is directly sent to the classifier, but what happens here is there are two components;
+
+Feature Extractor : which comes from VGG 16 (these weights will be frozen)
+Classifier: Which we will be using to fine tune (25088, in_features for VGG16)
+Now using this information, the image will be input to Feature extractor which takes into shape (?, 3, 224, 224)
+
+So during forward pass you are required to iterate over your trainloader, which will output batch of shape (batch_size, 3, 224, 224) if everything is implemented correctly.
+
+and then if you do forward pass like :
+
+for inputs in trainloader:
+    inference = model(inputs)
+Everything should just be fine.
+
+Your classifier will have shape something like this in your case:
+
+classifier = nn.Sequential(OrderedDict(
+            [
+                ('fc1', nn.Linear(25088, 500)),
+                ('relu', nn.ReLU()),
+                ('fc2', nn.Linear(500, 102)),
+                ('output', nn.LogSoftmax(dim=1))
+            ]))
+25088 is called input features, which you can calculate as below:
+
+model.classifier.in_features or model.fc.in_features
+
