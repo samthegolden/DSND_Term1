@@ -146,3 +146,59 @@ model_ft, input_size = initialize_model(model_name, num_classes, feature_extract
 print(model_ft)
 
 And see how you can take out input features from various models.
+
+
+#### 
+
+I'm trying to convert the image colors array to a float between 0 and 1, but I'm having the following error:
+
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-27-45515715cd4d> in <module>()
+      1 # TODO: Display an image along with the top 5 classes
+----> 2 probs, classes = predict('flowers/test/1/image_06743.jpg', model)
+      3 print(probs)
+      4 print(classes)
+      5 
+<ipython-input-26-954a8b8d17e1> in predict(image_path, model, topk)
+      2     ''' Predict the class (or classes) of an image using a trained deep learning model.
+      3     '''
+----> 4     image = process_image(image_path)
+      5     image = imshow(image)
+      6 
+<ipython-input-24-0ce202c55750> in process_image(image)
+     14     # convert colors
+     15     np_image = np.array(im)
+---> 16     im = np_image.astype(float) / 255 # convert to [0,1]
+     17 
+     18     # normalize
+TypeError: float() argument must be a string or a number, not 'Image'
+I know this is a type mismatch but I'm following the documentation and it apparently should work. What am I doing wrong?
+
+Code is on github. The section where the error happens is:
+
+```
+
+np_image = np.array(im)
+
+im = np_image.astype(float) / 255 # convert to [0,1]
+
+```
+
+A: 
+
+Hi,
+
+It took me some time with understanding the whole issue. And this was really silly.
+
+It is because of the lines:
+
+im = im.resize((256, 256)) # i'm not keeping the aspect ratio...
+im = im.crop((224, 224,224,224))
+Especially the last one. As you are cropping it to (224,224) (224,224) meaning there is literally nothing left in the image.
+
+I did a size print of im.size which returns 1, but it should have been (224,224)
+
+Personally, I wish the error message made more sense. But we have the root cause. You need to do the aspect ratio keeping and cropping out stuff.
+
+This should resolve the issue for you.
