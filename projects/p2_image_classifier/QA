@@ -202,3 +202,34 @@ I did a size print of im.size which returns 1, but it should have been (224,224)
 Personally, I wish the error message made more sense. But we have the root cause. You need to do the aspect ratio keeping and cropping out stuff.
 
 This should resolve the issue for you.
+
+
+######
+
+Q:
+
+In my code, I had to convert a numpy array to a pytorch tensor, because that is the input type of the model
+
+ps = torch.exp(model(torch.from_numpy(image))) # need to convert to pytorch tensor...
+Now, I have a weird error I have no clue how to solve:
+
+RuntimeError: expected stride to be a single integer value or a list of 1 values to match the convolution dimensions, but got stride=[1, 1]
+Is there some mismatch in my size parameters? Code on github
+
+####
+
+A: 
+
+So the problem here is the batch size variable , so while training you have used batch size of 32 , so pytorch model always excepts a batch size in first dimension of input
+
+Since here you are sending only one image , batch size is 1
+
+So use after converting to torch from numpy before sending input to model
+
+image.unsqueeze(0)
+and check dim , it should be torch.Size([1, 3, 224, 224])
+
+it adds extra dimension
+
+let us know if this solves your error , we are always here help
+
