@@ -44,12 +44,19 @@ def save_checkpoint(model, filepath):
           'hidden_layers': [each.out_features for each in model.hidden_layers],
           'state_dict': model.state_dict() # includes parameters set before 'checkpoint' ?
             }
+          
     '''
+    checkpoint = {
+    'input_size': 25088,
+    'output_size': 102,
+    'state_dict': model.state_dict(),
+    'mapping':    train_datasets.class_to_idx,
+    'classifier': model.classifier
+    }
     torch.save(model, filepath)
 
 ###
 def train(data_dir, save_dir="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_units=5000, epochs=5, gpu=True):
-    print('start')
     #data_dir = 'flowers'
     train_dir = data_dir + '/train'
     valid_dir = data_dir + '/valid'
@@ -226,4 +233,4 @@ if __name__ == "__main__":
     # only pass parameters that are not None
     train(args.data_directory, **{k: v for k, v in kwargs.items() if v is not None})
 
-# python train.py flowers --gpu
+    # python train.py flowers --gpu
