@@ -174,8 +174,10 @@ if __name__ == "__main__":
         cat_to_name = json.load(f)
 
     kwargs = dict(top_k=args.top_k, category_names=args.category_names, gpu=args.gpu)
+
+    print(args)
     # only pass parameters that are not None
-    ps, classe_names = predict(args.path_to_image, args.checkpoint, **{k: v for k, v in kwargs.items() if v is not None})
+    ps, class_names = predict(args.path_to_image, args.checkpoint, **{k: v for k, v in kwargs.items() if v is not None})
 
     print(ps, class_names)
 

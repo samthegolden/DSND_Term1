@@ -12,8 +12,6 @@ import numpy as np
 from numpy import ndarray
 import torch
 
-import helper
-
 import matplotlib.pyplot as plt
 
 ###
@@ -22,9 +20,6 @@ from torch import nn
 import torch.nn.functional as F
 from torch import optim
 from torchvision import datasets, transforms, models
-
-import helper
-
 
 data_dir = 'flowers'
 train_dir = data_dir + '/train'
@@ -53,8 +48,8 @@ def save_checkpoint(model, filepath):
     torch.save(model, filepath)
 
 ###
-def train(data_dir, save_checkpoint="model_checkpoint_dir", arch="vgg16", lr=0.0001, hidden_units=5000, epochs=5, gpu=True):
-    #print()
+def train(data_dir, save_checkpoint="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_units=5000, epochs=5, gpu=True):
+    print('start')
     #data_dir = 'flowers'
     train_dir = data_dir + '/train'
     valid_dir = data_dir + '/valid'
@@ -148,16 +143,18 @@ def train(data_dir, save_checkpoint="model_checkpoint_dir", arch="vgg16", lr=0.0
 
     # TRAIN
 
-    epochs = 5
+    epochs = 2
     steps = 0
     running_loss = 0
     print_every = 10
+    
 
     for e in range(epochs):
         running_loss = 0
         for images, labels in trainloader:
             # images = images.view(images.shape[0], -1) # no need of reshaping...why?
             steps += 1
+            print(steps)
             images, labels = images.to(device), labels.to(device)
             
             optimizer.zero_grad()
@@ -169,7 +166,7 @@ def train(data_dir, save_checkpoint="model_checkpoint_dir", arch="vgg16", lr=0.0
             optimizer.step()
             
             running_loss += loss.item()
-            
+
             # Validation loop -but then why use testloader and not validloader??
             if steps % print_every == 0:
                 test_loss = 0
@@ -182,7 +179,7 @@ def train(data_dir, save_checkpoint="model_checkpoint_dir", arch="vgg16", lr=0.0
                         batch_loss = criterion(logps, validlabels)
                         
                         test_loss += batch_loss.item()
-                        
+
                         # Calculate accuracy
                         ps = torch.exp(logps)
                         top_p, top_class = ps.topk(1, dim=1)
