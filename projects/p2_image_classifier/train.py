@@ -33,7 +33,7 @@ train_datasets = datasets.ImageFolder(train_dir, transform=train_transforms)
 
 def save_checkpoint(model, filepath):
     # https://pytorch.org/tutorials/beginner/saving_loading_models.html
-    model.class_to_idx = train_datasets.class_to_idx
+    #model.class_to_idx = train_datasets.class_to_idx
     '''
     model.class_to_idx = image_datasets['train'].class_to_idx
     model.epochs = epochs
@@ -53,7 +53,7 @@ def save_checkpoint(model, filepath):
     'mapping':    train_datasets.class_to_idx,
     'classifier': model.classifier
     }
-    torch.save(model, filepath)
+    torch.save(checkpoint, filepath)
 
 ###
 def train(data_dir, save_dir="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_units=5000, epochs=5, gpu=True):
@@ -232,5 +232,5 @@ if __name__ == "__main__":
     kwargs = dict(save_dir=args.save_dir, arch=args.arch, lr=args.learning_rate, hidden_units=args.hidden_units, epochs=args.epochs, gpu=args.gpu)
     # only pass parameters that are not None
     train(args.data_directory, **{k: v for k, v in kwargs.items() if v is not None})
-
+    
     # python train.py flowers --gpu

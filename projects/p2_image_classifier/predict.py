@@ -23,7 +23,7 @@ def load_checkpoint(filepath):
     model = models.vgg16(pretrained = True) 
        
     model.classifier = checkpoint['classifier']
-    model.load_state_dict (checkpoint['state_dict'])
+    model.load_state_dict(checkpoint['state_dict'])
     # getting the mapping
     model.class_to_idx = checkpoint['mapping']
     
