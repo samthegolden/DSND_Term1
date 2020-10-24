@@ -25,6 +25,17 @@ from torchvision import datasets, transforms, models
 
 import helper
 
+
+data_dir = 'flowers'
+train_dir = data_dir + '/train'
+train_transforms = transforms.Compose([transforms.Resize(256),
+                                      transforms.CenterCrop(224),
+                                      transforms.ToTensor(),
+                                      transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+
+train_datasets = datasets.ImageFolder(train_dir, transform=train_transforms)
+
+
 def save_checkpoint(model, filepath):
     # https://pytorch.org/tutorials/beginner/saving_loading_models.html
     model.class_to_idx = train_datasets.class_to_idx
