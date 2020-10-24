@@ -48,7 +48,7 @@ def save_checkpoint(model, filepath):
     torch.save(model, filepath)
 
 ###
-def train(data_dir, save_checkpoint="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_units=5000, epochs=5, gpu=True):
+def train(data_dir, save_dir="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_units=5000, epochs=5, gpu=True):
     print('start')
     #data_dir = 'flowers'
     train_dir = data_dir + '/train'
@@ -154,7 +154,6 @@ def train(data_dir, save_checkpoint="checkpoint.pth", arch="vgg16", lr=0.0001, h
         for images, labels in trainloader:
             # images = images.view(images.shape[0], -1) # no need of reshaping...why?
             steps += 1
-            print(steps)
             images, labels = images.to(device), labels.to(device)
             
             optimizer.zero_grad()
@@ -183,7 +182,7 @@ def train(data_dir, save_checkpoint="checkpoint.pth", arch="vgg16", lr=0.0001, h
                         # Calculate accuracy
                         ps = torch.exp(logps)
                         top_p, top_class = ps.topk(1, dim=1)
-                        equals = top_class == labels.view(*top_class.shape)
+                        equals = top_class == validlabels.view(*top_class.shape)
                         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
 
                 print(f"Epoch {e+1}/{epochs}.. " \
@@ -197,7 +196,7 @@ def train(data_dir, save_checkpoint="checkpoint.pth", arch="vgg16", lr=0.0001, h
             print(f"Training loss: {running_loss} ")
         ''' 
 
-    save_checkpoint(model, save_checkpoint)
+    save_checkpoint(model, save_dir)
 ###
 
 if __name__ == "__main__":
@@ -223,6 +222,8 @@ if __name__ == "__main__":
     print(args.gpu)
     '''
 
-    kwargs = dict(save_checkpoint=args.save_dir, arch=args.arch, lr=args.learning_rate, hidden_units=args.hidden_units, epochs=args.epochs, gpu=args.gpu)
+    kwargs = dict(save_dir=args.save_dir, arch=args.arch, lr=args.learning_rate, hidden_units=args.hidden_units, epochs=args.epochs, gpu=args.gpu)
     # only pass parameters that are not None
     train(args.data_directory, **{k: v for k, v in kwargs.items() if v is not None})
+
+# python train.py flowers --gpu

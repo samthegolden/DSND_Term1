@@ -183,4 +183,4 @@ if __name__ == "__main__":
 
     ## RUN
 
-    # python predict.py 'flowers/test/1/image_06743.jpg' '.ipynb_checkpoints/Image Classifier Project-checkpoint.ipynb'
+    # python predict.py 'flowers/test/1/image_06743.jpg' checkpoint.pth
