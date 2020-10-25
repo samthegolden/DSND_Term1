@@ -110,6 +110,7 @@ def imshow(image, ax=None, title=None):
 
 def predict(image_path, checkpoint, top_k=5, category_names='cat_to_name.json', gpu=True):
     model = load_checkpoint(checkpoint)
+    model.to(device)
 
     ''' Predict the class (or classes) of an image using a trained deep learning model.
     '''
@@ -133,7 +134,7 @@ def predict(image_path, checkpoint, top_k=5, category_names='cat_to_name.json', 
     with torch.no_grad():
         ps = torch.exp(model(image)) # need to convert to pytorch tensor...    print(ps.shape)
     
-    probs, indeces = ps.topk(topk)
+    probs, indeces = ps.topk(top_k)
     if device == 'cpu':
         probs = probs.numpy()
         indeces = indeces.numpy()
@@ -179,7 +180,8 @@ if __name__ == "__main__":
     # only pass parameters that are not None
     ps, class_names = predict(args.path_to_image, args.checkpoint, **{k: v for k, v in kwargs.items() if v is not None})
 
-    print(ps, class_names)
+    print(f"Probabilities: {ps}")
+    print(f"Classes: {class_names}")
 
     ## RUN
 
