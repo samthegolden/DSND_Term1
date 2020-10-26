@@ -97,8 +97,8 @@ def train(data_dir, save_dir="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_u
     elif arch == "vgg13":
         model = models.vgg13(pretrained=True)
 
-    device = torch.device("cuda") if gpu else torch.device("cpu")
-
+    device = torch.device("cuda") if torch.cuda.is_available() and gpu else torch.device("cpu")
+    
     # Freeze parameters so we don't backprop through them
     for param in model.parameters():
         param.requires_grad = False
