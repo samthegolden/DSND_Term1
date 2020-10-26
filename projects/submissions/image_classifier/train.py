@@ -94,8 +94,8 @@ def train(data_dir, save_dir="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_u
     # LOAD PRETRAINED MODEL
     if arch == "vgg16":
         model = models.vgg16(pretrained=True)
-    elif arch == "squeezenet":
-        model = models.squeezenet1_0(pretrained=True)
+    elif arch == "vgg13":
+        model = models.vgg13(pretrained=True)
 
     device = torch.device("cuda") if gpu else torch.device("cpu")
 
@@ -150,7 +150,6 @@ def train(data_dir, save_dir="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_u
 
     # TRAIN
 
-    epochs = 2
     steps = 0
     running_loss = 0
     print_every = 10
