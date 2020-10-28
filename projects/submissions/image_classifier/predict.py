@@ -20,7 +20,11 @@ def load_checkpoint(filepath):
     model.load_state_dict(checkpoint['state_dict'])
     '''
     checkpoint = torch.load(filepath)
-    model = models.vgg16(pretrained = True) 
+
+    if checkpoint['arch'] == 'vgg13':
+        model = models.vgg13(pretrained = True)
+    elif checkpoint['arch'] == 'vgg16':
+        model = models.vgg16(pretrained = True)
        
     model.classifier = checkpoint['classifier']
     model.load_state_dict(checkpoint['state_dict'])

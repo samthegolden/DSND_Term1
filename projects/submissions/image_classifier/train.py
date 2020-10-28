@@ -31,7 +31,7 @@ train_transforms = transforms.Compose([transforms.Resize(256),
 train_datasets = datasets.ImageFolder(train_dir, transform=train_transforms)
 
 
-def save_checkpoint(model, filepath):
+def save_checkpoint(model, filepath, arch):
     # https://pytorch.org/tutorials/beginner/saving_loading_models.html
     #model.class_to_idx = train_datasets.class_to_idx
     '''
@@ -51,7 +51,8 @@ def save_checkpoint(model, filepath):
     'output_size': 102,
     'state_dict': model.state_dict(),
     'mapping':    train_datasets.class_to_idx,
-    'classifier': model.classifier
+    'classifier': model.classifier,
+    'arch': arch
     }
     torch.save(checkpoint, filepath)
 
@@ -202,7 +203,7 @@ def train(data_dir, save_dir="checkpoint.pth", arch="vgg16", lr=0.0001, hidden_u
             print(f"Training loss: {running_loss} ")
         ''' 
 
-    save_checkpoint(model, save_dir)
+    save_checkpoint(model, save_dir, arch)
 ###
 
 if __name__ == "__main__":
